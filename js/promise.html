@@ -1,0 +1,42 @@
+<!--
+ * @Author: WGF
+ * @Date: 2022-11-26 12:18:40
+ * @LastEditors: WGF
+ * @LastEditTime: 2023-02-16 20:06:00
+ * @FilePath: \学习记录\other\promise.html
+ * @Description: 文件描述
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const arr = ["a", "b", "c"];
+      let result = [];
+      function yibufun(item) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(item);
+          }, 1000);
+        });
+      }
+      async function test() {
+        let proArr = arr.map(async (item) => {
+          console.log("abc");
+          return await yibufun(item);
+        });
+        console.log(proArr)
+        await Promise.all(proArr).then((res) => {
+          result = res;
+        });
+        console.log(result)
+      }
+      test();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.content {
+  margin: 0 auto;
+  width: 200px;
+  height: 20px;
+  background-color: aquamarine;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: normal;
+  font-family: "MicrosoftYaHei";
+}
+.moveText {
+  font-size: 16px;
+  white-space: nowrap;
+  display: inline-block;
+  color: chocolate;
+  animation: marqueeAnim linear 0s infinite;
+}
+.label1 {
+  padding-left: 10px;
+}
+.label2 {
+  padding-left: 10px;
+  display: inline-block;
+}
+@keyframes marqueeAnim {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}

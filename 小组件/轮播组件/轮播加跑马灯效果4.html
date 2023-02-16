@@ -1,0 +1,395 @@
+<!--
+ * @Author: WGF
+ * @Date: 2022-08-01 09:38:45
+ * @LastEditors: WGF
+ * @LastEditTime: 2022-09-02 11:49:58
+ * @FilePath: \学习记录\react\轮播组件\轮播加跑马灯效果4.html
+ * @Description: 无限轮播效果
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>无限轮播</title>
+    <style>
+      .wrapper {
+        margin: 90px auto;
+        width: 400px;
+        height: 310px;
+        background-color: rgb(171, 196, 145);
+        /* overflow: hidden; */
+        cursor: pointer;
+      }
+      .row {
+        white-space: nowrap;
+        font-size: 20px;
+        font-family: "MicrosoftYaHei";
+        line-height: 30px;
+        background-color: rgb(0, 255, 255, 0.3);
+        margin-bottom: 5px;
+        display: flex;
+      }
+      .index {
+        display: inline-block;
+        text-align: center;
+        width: 40px;
+      }
+      .text {
+        width: 360px;
+        overflow: hidden;
+      }
+
+      .moveText {
+        font-size: 20px;
+        white-space: nowrap;
+        display: inline-block;
+        animation: marqueeAnim linear 0s infinite;
+      }
+      .label1 {
+        padding-left: 10px;
+      }
+      .label2 {
+        padding-left: 10px;
+        display: inline-block;
+      }
+      @keyframes marqueeAnim {
+        0% {
+          transform: translateX(0%);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+    </style>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class SlideComponent extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            list: [
+              {
+                key: 52,
+                value: "记采划组三花地则三号少再革一高保。",
+              },
+              {
+                key: 67,
+                value: "特新位眼连出周往制省须据发进又家市或。",
+              },
+              {
+                key: 78,
+                value: "线持真你知不次许全果年定。",
+              },
+              {
+                key: 41,
+                value: "连它转总飞现构象没起西须响例列天量。",
+              },
+              {
+                key: 38,
+                value: "连安律每阶每数响等其压但计图备。",
+              },
+              {
+                key: 35,
+                value: "团事素最日真选比确取根白较影段你器解。",
+              },
+              {
+                key: 82,
+                value: "权阶物新象立位等号信机都加。",
+              },
+              {
+                key: 4,
+                value: "火约式亲常求号平特取多导料。",
+              },
+
+              {
+                key: 22,
+                value: "群提入活文说计气教都况问报片争群采半。",
+              },
+              {
+                key: 43,
+                value: "极须油场采听约口军气白真南约地。",
+              },
+              {
+                key: 88,
+                value: "重般别们才本众史你思必事又各等。",
+              },
+              {
+                key: 26,
+                value: "段南会气广论得争温先现查。",
+              },
+              {
+                key: 60,
+                value: "改约制代厂速战确行力调法东育。",
+              },
+              {
+                key: 93,
+                value: "海叫其见采要易四主结基计场计支置利。",
+              },
+              {
+                key: 46,
+                value: "任取以油低花毛不存现近别。",
+              },
+              {
+                key: 20,
+                value: "中验在且导林子华活革造持东资。",
+              },
+            ],
+          };
+          this.panelRef = React.createRef(); // DOM获取
+          this.list = []; // 存储每一行的DOM列表
+          this.index = 0; // 标识需要恢复到初始位置的当前索引
+          this.timer = null; // 定时器
+          this.scrollHeight = 35; // 每次滚动的距离
+          this.waitInterval = 3; // 等待时间(s) 偏移动画时间一定要比等待时间短
+          this.offsetInterval = 2.99; // 偏移动画时间(s)
+          this.moveSpeed = "0.5"; // 跑马灯移动速度
+          this.Threshold = 9; // 阈值，超过多少条开始滚动
+          //获取文本实际宽度
+          String.prototype.pxWidth = function (font) {
+            var canvas =
+              String.prototype.pxWidth.canvas ||
+              (String.prototype.pxWidth.canvas =
+                document.createElement("canvas"));
+            let context = canvas.getContext("2d");
+            font && (context.font = font);
+            var metrics = context.measureText(this);
+            return metrics.width;
+          };
+        }
+
+        componentDidMount() {
+          this.init();
+
+          // 监听窗口切换，窗口切换后停止滚动
+          document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState == "hidden") {
+              clearInterval(this.timer);
+            } else {
+              this.scroll();
+            }
+          });
+        }
+        // 初始化操作
+        init = () => {
+          this.list = [];
+          this.index = 0;
+          this.timer = null;
+          this.list = this.panelRef.current.querySelectorAll(".row");
+          console.log(this.list.length);
+          this.list.forEach((item) => {
+            item.style.transform = "";
+            item.style.opacity = 1;
+            item.style.transition = null;
+            item.ontransitionend = null;
+          });
+          if (this.timer) {
+            clearInterval(this.timer);
+          }
+          this.scroll();
+        };
+
+        scroll = () => {
+          const len = this.list.length;
+          if (len <= this.Threshold) return;
+
+          this.timer = setInterval(() => {
+            this.index = this.index % len;
+            let temp = this.index;
+            this.list.forEach((row, i) => {
+              let current = row.style.transform.match(/-*\d/g);
+              current = (current && current.join("") - 0) || 0;
+              // row.style.opacity = 1;
+              row.style.transform = `translateY(${
+                current - this.scrollHeight
+              }px)`;
+              row.style.transition = `transform linear ${this.offsetInterval}s`;
+              if (temp === i) {
+                // row.ontransitionend = () => {
+                //   console.log("temp", temp);
+                //   console.log("结束了");
+                //   // row.style.opacity = 1;
+                //   // row.style.transform = `translateY(${
+                //   //   (len - temp - 1) * this.scrollHeight
+                //   // }px`;
+                //   // row.style.transition = null;
+                //   // row.ontransitionend = null;
+                // };
+                setTimeout(() => {
+                  console.log("temp", temp);
+                  console.log("结束了");
+                  row.style.transform = `translateY(${
+                    (len - temp - 1) * this.scrollHeight
+                  }px`;
+                  row.style.transition = null;
+                  row.ontransitionend = null;
+                }, this.offsetInterval * 1000);
+                console.log(row);
+              }
+            });
+
+            /**
+             * 无限滚动效果1
+             */
+            // this.list[this.index].style.opacity = 1;
+            // this.list[this.index].style.transform = `translateY(${
+            //   (len - this.index - 1) * 35
+            // }px`;
+            // this.index++;
+
+            /**
+             * 无限滚动效果2
+             */
+
+            // let temp = this.index;
+            // // setTimeout(() => {
+            // //   console.log("setTImeOut", temp);
+            // // }, this.offsetInterval * 1000);
+            // this.list[temp].ontransitionend = () => {
+            //   console.log(temp);
+            //   // this.list[temp].style.opacity = 1;
+            //   // this.list[temp].style.transform = `translateY(${
+            //   //   (len - temp - 1) * this.scrollHeight
+            //   // }px`;
+            //   // this.list[temp].style.transition = null;
+            //   // this.list[temp].ontransitionend = null;
+            // };
+            // (
+            //   // 最顶部一行完全滚出窗口之后在让其回到最底部
+            //   () => {
+            //     console.log("temp",temp)
+            //     this.list[temp].ontransitionend = () => {
+            //       this.list[temp].style.opacity = 1;
+            //       this.list[temp].style.transform = `translateY(${
+            //         (len - temp - 1) * this.scrollHeight
+            //       }px`;
+            //       this.list[temp].style.transition = null;
+            //       this.list[temp].ontransitionend = null;
+            //     };
+            //   }
+            // )(temp);
+            this.index++;
+          }, this.waitInterval * 1000);
+        };
+
+        // 鼠标移入
+        mouseover = () => {
+          clearInterval(this.timer);
+          // 设置定时器，确保上一次动画完成后监听，不然会出现空行
+          setTimeout(() => {
+            this.panelRef.current.addEventListener(
+              "wheel", // 该监听方法只支持IE与Chrome浏览器
+              this.scrollEventListener,
+              { passive: true }
+            );
+          }, this.offsetInterval * 1000);
+        };
+
+        // 鼠标移出
+        mouseleave = () => {
+          this.panelRef.current.removeEventListener(
+            "wheel",
+            this.scrollEventListener,
+            { passive: true }
+          );
+          this.scroll();
+        };
+
+        // 滑轮滚动事件
+        scrollEventListener = (event) => {
+          clearInterval(this.timer);
+
+          if (event.wheelDelta < 0) {
+            // 向上滚动
+            const len = this.list.length;
+            this.index = this.index % len;
+            this.list.forEach((row) => {
+              let current = row.style.transform.match(/-*\d/g);
+              current = (current && current.join("") - 0) || 0;
+              row.style.opacity = 1;
+              row.style.transform = `translateY(${
+                current - this.scrollHeight
+              }px)`;
+              row.style.transition = `transform ${0}s`;
+            });
+
+            this.list[this.index].style.opacity = 0;
+            this.list[this.index].style.transform = `translateY(${
+              (len - this.index - 1) * this.scrollHeight
+            }px`;
+            this.index++;
+          } else {
+            // 向下滚动
+            const len = this.list.length;
+            this.index = this.index % len;
+            this.list.forEach((row) => {
+              let current = row.style.transform.match(/-*\d/g);
+              current = (current && current.join("") - 0) || 0;
+              row.style.opacity = 1;
+              row.style.transform = `translateY(${
+                current + this.scrollHeight
+              }px)`;
+              row.style.transition = `transform ${0}s`;
+            });
+            if (this.index === 0) {
+              this.list[len - this.index - 1].style.opacity = 1;
+              this.list[len - this.index - 1].style.transform = `translateY(${
+                -(len - this.index - 1) * this.scrollHeight
+              }px`;
+              this.index = len - 1;
+            } else {
+              this.list[this.index - 1].style.opacity = 1;
+              this.list[this.index - 1].style.transform = `translateY(${
+                -(this.index - 1) * this.scrollHeight
+              }px`;
+              this.index--;
+            }
+          }
+        };
+
+        render() {
+          return (
+            <div
+              className="wrapper"
+              onMouseEnter={() => this.mouseover()}
+              onMouseLeave={() => this.mouseleave()}
+            >
+              <div className="panel" ref={this.panelRef}>
+                {this.state.list.map((item, index) => {
+                  return (
+                    <div className="row" key={item.key}>
+                      <div className="index">{index}</div>
+                      <div className="text">
+                        {item.value.pxWidth("20px MicrosoftYaHei") < 360 ? (
+                          <div className="noMoveText">{item.value}</div>
+                        ) : (
+                          <div
+                            className="moveText"
+                            style={{
+                              animationDuration:
+                                item.value.toString().length * this.moveSpeed +
+                                "s",
+                            }}
+                          >
+                            <span className="label1"> {item.value}</span>
+                            <span className="label2"> {item.value}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<SlideComponent />, document.getElementById("root"));
+    </script>
+  </body>
+</html>

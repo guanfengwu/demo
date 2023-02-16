@@ -1,0 +1,64 @@
+<!--
+ * @Author: WGF
+ * @Date: 2022-08-01 16:38:47
+ * @LastEditors: WGF
+ * @LastEditTime: 2022-08-02 11:14:03
+ * @FilePath: \学习记录\react\无限轮播组件\轮播效果1.html
+ * @Description: 控制滚动条进行轮播效果
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>控制滚动条进行轮播效果</title>
+    <style>
+      .wrapper {
+        margin: 0px auto;
+        width: 200px;
+        height: 300px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        cursor: pointer;
+      }
+      .panel {
+        width: 200px;
+        height: 600px;
+        background: linear-gradient(180deg, #17ead9, #6078ea);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper" id="wrapper">
+      <div class="panel" id="panel"></div>
+    </div>
+    <script>
+      let timer = null;
+      let offSetCount = 0;
+      let wrapper = document.getElementById("wrapper");
+      let panel = document.getElementById("panel");
+
+      function scroll() {
+        timer = setInterval(() => {
+          if (offSetCount > 300) {
+            offSetCount = 0;
+            wrapper.scrollTop = offSetCount;
+          } else {
+            offSetCount = offSetCount + 1;
+            wrapper.scrollTop = offSetCount;
+          }
+        }, 50);
+      }
+
+      wrapper.onmouseover = (e) => {
+        clearInterval(timer);
+      };
+      wrapper.onmouseleave = (e) => {
+        offSetCount = wrapper.scrollTop;
+        scroll();
+      };
+      scroll();
+    </script>
+  </body>
+</html>

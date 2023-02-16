@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box {
+        margin: 0 auto;
+        width: 22px;
+        height: 20px;
+        position: relative;
+      }
+      span {
+        display: inline-block;
+        height: 2px;
+        width: 22px;
+        line-height: 0px;
+        background-color: red;
+        margin-bottom: 0px;
+        transition: all 0.3s ease-out 0s;
+        position: absolute;
+        transform-origin: left center;
+      }
+      span:nth-child(1) {
+        top: 0px;
+        transform: rotate(0deg);
+      }
+      span:nth-child(2) {
+        top: 9px;
+        opacity: 1;
+      }
+      span:nth-child(3) {
+        top: 18px;
+        transform: rotate(0deg);
+      }
+      .line {
+        transform-origin: left center;
+      }
+      .line:nth-child(1) {
+        top: 1px;
+        transform: rotate(45deg);
+      }
+      .line:nth-child(2) {
+        top: 9px;
+        opacity: 0;
+      }
+      .line:nth-child(3) {
+        top: 16px;
+        transform: rotate(-45deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box" onclick="clickBox()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <script>
+      const lines = document.querySelectorAll("span");
+      let status = false;
+      function clickBox() {
+        lines.forEach((item) => {
+          if (status === false) {
+            item.setAttribute("class", "line");
+          } else {
+            item.setAttribute("class", null);
+          }
+        });
+        status = !status;
+      }
+    </script>
+  </body>
+</html>

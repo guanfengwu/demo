@@ -1,0 +1,52 @@
+<!--
+ * @Author: WGF
+ * @Date: 2022-07-31 21:25:03
+ * @LastEditors: WGF
+ * @LastEditTime: 2022-08-03 11:48:12
+ * @FilePath: \学习记录\react\水球图组件\index.html
+ * @Description: 文件描述
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>水球图</title>
+    <link rel="stylesheet" href="./index.css" />
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class WaterBallComponent extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            value: 0.59,
+          };
+          this.ballSize = 200 + "px"; // 也可以设置百分比，动态改变水球大小
+          this.panelRef = React.createRef(); // DOM获取
+        }
+
+        render() {
+          return (
+            <div
+              className="loader"
+              ref={this.panelRef}
+              style={{
+                width: this.ballSize,
+                height: this.ballSize,
+                "--top": `${-205 + (this.state.value / 1) * 100}%`,
+              }}
+            ></div>
+          );
+        }
+      }
+
+      ReactDOM.render(<WaterBallComponent />, document.getElementById("root"));
+    </script>
+  </body>
+</html>

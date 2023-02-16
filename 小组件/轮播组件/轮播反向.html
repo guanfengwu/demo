@@ -1,0 +1,246 @@
+<!--
+ * @Author: WGF
+ * @Date: 2022-08-02 10:03:04
+ * @LastEditors: WGF
+ * @LastEditTime: 2022-08-16 16:49:19
+ * @FilePath: \学习记录\react\轮播组件\轮播反向.html
+ * @Description: 恢复到初始化轮播效果
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>轮播反向</title>
+    <style>
+      body {
+        background-color: black;
+      }
+      .wrapper {
+        margin: 0px auto;
+        margin-top: 500px;
+        width: 500px;
+        height: 90px;
+        background-color: blue;
+        /* overflow: hidden; */
+        display: flex;
+        justify-content: center;
+        position: relative;
+        background-color: black;
+        color: white;
+      }
+      .panel {
+        position: absolute;
+        bottom: 0;
+      }
+      .row {
+        width: 400px;
+        white-space: nowrap;
+        font-size: 20px;
+        line-height: 30px;
+        /* background-color: aqua; */
+      }
+      .boxBg {
+        width: 400px;
+        height: 90px;
+      }
+      .bgRow {
+        height: 30px;
+        width: 100%;
+        /* background-color: aqua; */
+      }
+      .bgRow:nth-child(2n + 1) {
+        background-color: aqua;
+      }
+    </style>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class SlideComponent extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            list: [
+              {
+                key: 52,
+                value: "记采划组三花地则三号少再革一高保。",
+              },
+              {
+                key: 67,
+                value: "特新位眼连出周往制省须据发进又家市或。",
+              },
+              {
+                key: 78,
+                value: "线持真你知不次许全果年定。",
+              },
+              {
+                key: 41,
+                value: "连它转总飞现构象没起西须响例列天量。",
+              },
+              {
+                key: 38,
+                value: "连安律每阶每数响等其压但计图备。",
+              },
+              {
+                key: 35,
+                value: "团事素最日真选比确取根白较影段你器解。",
+              },
+              {
+                key: 82,
+                value: "权阶物新象立位等号信机都加。",
+              },
+              {
+                key: 4,
+                value: "火约式亲常求号平特取多导料。",
+              },
+              {
+                key: 22,
+                value: "群提入活文说计气教都况问报片争群采半。",
+              },
+              {
+                key: 43,
+                value: "极须油场采听约口军气白真南约地。",
+              },
+              {
+                key: 88,
+                value: "重般别们才本众史你思必事又各等。",
+              },
+              {
+                key: 26,
+                value: "段南会气广论得争温先现查。",
+              },
+              {
+                key: 60,
+                value: "改约制代厂速战确行力调法东育。",
+              },
+              {
+                key: 93,
+                value: "海叫其见采要易四主结基计场计支置利。",
+              },
+              {
+                key: 46,
+                value: "任取以油低花毛不存现近别。",
+              },
+              {
+                key: 20,
+                value: "中验在且导林子华活革造持东资。",
+              },
+            ],
+          };
+          this.panelRef = React.createRef(); // DOM获取
+          this.timer = null; // 定时器
+          this.scrollHeight = 30; // 每次滚动的距离
+          this.panel = null;
+          this.index = this.state.list.length;
+        }
+
+        componentDidMount() {
+          this.init();
+          document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState == "hidden") {
+              clearInterval(this.timer);
+            } else {
+              this.scroll();
+            }
+          });
+
+          setTimeout(() => {
+            const newData = [
+              {
+                key: 60,
+                value: "改约制代厂速战确行力调法东育。",
+              },
+              {
+                key: 93,
+                value: "海叫其见采要易四主结基计场计支置利。",
+              },
+              {
+                key: 46,
+                value: "任取以油低花毛不存现近别。",
+              },
+              {
+                key: 20,
+                value: "中验在且导林子华活革造持东资。",
+              },
+            ];
+            this.setState({
+              list: newData.concat(
+                this.state.list.slice(this.index - 3 + 1, this.index + 1)
+              ),
+            });
+            this.init();
+            // clearInterval(this.timer)
+          }, 8000);
+        }
+
+        init = () => {
+          if (this.timer) {
+            clearInterval(this.timer);
+          }
+          let length = this.state.list.length;
+          console.log(length);
+          this.panel = this.panelRef.current;
+          this.panel.style.bottom = `${0}px`;
+          this.panel.style.transition = `bottom ${0}s`;
+
+          this.scroll();
+        };
+
+        scroll = () => {
+          this.timer = setInterval(() => {
+            let current = this.panel.style.bottom.match(/-*\d/g);
+            current = (current && current.join("") - 0) || 0;
+            console.log("current", current);
+            if (current === -(this.state.list.length - 3) * this.scrollHeight) {
+              clearInterval(this.timer);
+              return;
+            }
+            this.panel.style.bottom = `${current - this.scrollHeight}px`;
+            this.panel.style.transition = `bottom ${1}s`;
+            this.index--;
+          }, 2000);
+        };
+
+        mouseover = () => {
+          clearInterval(this.timer);
+        };
+
+        mouseleave = () => {
+          this.scroll();
+        };
+
+        render() {
+          return (
+            <div
+              className="wrapper"
+              onMouseOver={() => this.mouseover()}
+              onMouseLeave={() => this.mouseleave()}
+            >
+              <div className="boxBg">
+                {[1, 2, 3].map((_, index) => {
+                  return <div className="bgRow" key={index}></div>;
+                })}
+              </div>
+              <div className="panel" ref={this.panelRef}>
+                {this.state.list.map((item, index) => {
+                  return (
+                    <div className="row" key={index}>
+                      <span>{this.state.list.length - index}</span>
+                      <span> {item.value}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<SlideComponent />, document.getElementById("root"));
+    </script>
+  </body>
+</html>

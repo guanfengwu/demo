@@ -1,0 +1,75 @@
+<!--
+ * @Author: WGF
+ * @Date: 2022-07-31 16:04:13
+ * @LastEditors: WGF
+ * @LastEditTime: 2022-08-12 13:06:08
+ * @FilePath: \学习记录\react\跑马灯效果组件\index.html
+ * @Description: 跑马灯效果组件
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <link rel="stylesheet" href="./index.css" />
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      /**
+       * 跑马灯效果组件
+       */
+      function ScrollComponent(props) {
+        let { moveSpeed, bodyFont } = props;
+
+        //为字符串定义一个方法
+        String.prototype.pxWidth = function (font) {
+          console.log(String.prototype.pxWidth.canvas);
+          var canvas =
+            String.prototype.pxWidth.canvas ||
+            (String.prototype.pxWidth.canvas =
+              document.createElement("canvas"));
+          let context = canvas.getContext("2d");
+          font && (context.font = font);
+          var metrics = context.measureText(this);
+          console.log("this", this);
+          return metrics.width;
+        };
+        let text = "1111111111111111111111";
+        console.log("文本宽度", text.pxWidth(bodyFont));
+        return (
+          <div className="wrapper">
+            <div className="content">
+              {text.pxWidth(bodyFont) < 200 ? (
+                <div className="noMoveText">{text}</div>
+              ) : (
+                <div
+                  className="moveText"
+                  style={{
+                    animationDuration: text.toString().length * moveSpeed + "s",
+                  }}
+                >
+                  <span className="label1"> {text}</span>
+                  <span className="label2"> {text}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      ReactDOM.render(
+        <ScrollComponent
+          moveSpeed="0.5"
+          bodyFont="normal 16px MicrosoftYaHei"
+        />,
+        document.getElementById("root")
+      );
+    </script>
+  </body>
+</html>

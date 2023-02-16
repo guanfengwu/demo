@@ -1,0 +1,219 @@
+<!--
+ * @Author: WGF
+ * @Date: 2022-08-01 09:38:45
+ * @LastEditors: WGF
+ * @LastEditTime: 2023-02-16 20:13:24
+ * @FilePath: \demo\小组件\轮播组件\轮播效果3.html
+ * @Description: 无限轮播效果
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>无限轮播</title>
+    <style>
+      .wrapper {
+        margin: 60px auto;
+        width: 400px;
+        height: 310px;
+        background-color: rgb(250, 0, 0);
+        overflow: hidden;
+      }
+      .row {
+        white-space: nowrap;
+        font-size: 20px;
+        line-height: 30px;
+        background-color: aqua;
+        margin-bottom: 5px;
+      }
+    </style>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class SlideComponent extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            list: [
+              {
+                key: 52,
+                value: "记采划组三花地则三号少再革一高保。",
+              },
+              {
+                key: 67,
+                value: "特新位眼连出周往制省须据发进又家市或。",
+              },
+              {
+                key: 78,
+                value: "线持真你知不次许全果年定。",
+              },
+              {
+                key: 41,
+                value: "连它转总飞现构象没起西须响例列天量。",
+              },
+              {
+                key: 38,
+                value: "连安律每阶每数响等其压但计图备。",
+              },
+              {
+                key: 35,
+                value: "团事素最日真选比确取根白较影段你器解。",
+              },
+              {
+                key: 82,
+                value: "权阶物新象立位等号信机都加。",
+              },
+              {
+                key: 4,
+                value: "火约式亲常求号平特取多导料。",
+              },
+              {
+                key: 22,
+                value: "群提入活文说计气教都况问报片争群采半。",
+              },
+              {
+                key: 43,
+                value: "极须油场采听约口军气白真南约地。",
+              },
+              {
+                key: 88,
+                value: "重般别们才本众史你思必事又各等。",
+              },
+              {
+                key: 26,
+                value: "段南会气广论得争温先现查。",
+              },
+              {
+                key: 60,
+                value: "改约制代厂速战确行力调法东育。",
+              },
+              {
+                key: 93,
+                value: "海叫其见采要易四主结基计场计支置利。",
+              },
+              {
+                key: 46,
+                value: "任取以油低花毛不存现近别。",
+              },
+              {
+                key: 20,
+                value: "中验在且导林子华活革造持东资。",
+              },
+            ],
+          };
+          this.panelRef = React.createRef(); // DOM获取
+          this.list = []; // 存储每一行的DOM列表
+          this.index = 0; // 标识需要恢复到初始位置的当前索引
+          this.timer = null; // 定时器
+          this.scrollHeight = 35; // 每次滚动的距离
+        }
+
+        componentDidMount() {
+          this.init();
+          // 监听窗口切换，窗口切换后停止滚动
+          document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState == "hidden") {
+              clearInterval(this.timer);
+            } else {
+              clearInterval(this.timer);
+              this.scroll();
+            }
+          });
+        }
+        // 初始化操作
+        init = () => {
+          this.list = [];
+          this.index = 0;
+          this.timer = null;
+          this.list = this.panelRef.current.querySelectorAll(".row");
+          this.list.forEach((item) => {
+            item.style.transform = "";
+            item.style.opacity = 1;
+            item.style.transition = null;
+            item.ontransitionend = null;
+          });
+          if (this.timer) {
+            clearInterval(this.timer);
+          }
+          this.scroll();
+        };
+
+        scroll = () => {
+          const len = this.list.length;
+          if (len <= 9) return;
+          let temp = 0;
+          this.timer = setInterval(() => {
+            this.index = this.index % len;
+            this.list.forEach((row) => {
+              let current = row.style.transform.match(/-*\d/g);
+              current = (current && current.join("") - 0) || 0;
+              row.style.opacity = 1;
+              row.style.transform = `translateY(${
+                current - this.scrollHeight
+              }px)`;
+              row.style.transition = `transform ${1}s`;
+            });
+
+            /**
+             * 无限滚动效果1
+             */
+            // this.list[this.index].style.opacity = 0;
+            // this.list[this.index].style.transform = `translateY(${
+            //   (len - this.index - 1) * 35
+            // }px`;
+            // this.index++;
+
+            /**
+             * 无限滚动效果2
+             */
+            temp = this.index;
+            // 最顶部一行完全滚出窗口之后在让其回到最底部
+            this.list[temp].ontransitionend = () => {
+              this.list[temp].style.opacity = 0;
+              this.list[temp].style.transform = `translateY(${
+                (len - temp - 1) * this.scrollHeight
+              }px`;
+              this.list[temp].style.transition = null;
+              this.list[temp].ontransitionend = null;
+            };
+            this.index++;
+          }, 2000);
+        };
+
+        mouseover = () => {
+          clearInterval(this.timer);
+        };
+
+        mouseleave = () => {
+          this.scroll();
+        };
+        render() {
+          return (
+            <div
+              className="wrapper"
+              onMouseOver={() => this.mouseover()}
+              onMouseLeave={() => this.mouseleave()}
+            >
+              <div className="panel" ref={this.panelRef}>
+                {this.state.list.map((item, index) => {
+                  return (
+                    <div className="row" key={item.key}>
+                      <span> 无线{index}</span>
+                      <span> {item.value}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<SlideComponent />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
