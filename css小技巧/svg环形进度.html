@@ -1,0 +1,40 @@
+<!--
+ * @Author: WGF
+ * @Date: 2023-04-07 09:37:55
+ * @LastEditors: WGF
+ * @LastEditTime: 2023-04-07 14:59:30
+ * @FilePath: \demo\css小技巧\svg环形进度.html
+ * @Description: 文件描述
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">
+      <circle
+        id="circle"
+        cx="160"
+        cy="160"
+        r="140"
+        stroke="green"
+        stroke-dasharray="879.2"
+        stroke-dashoffset="100"
+        stroke-width="10"
+        fill="none"
+        stroke-linecap="round"
+        transform="rotate(-90, 160, 160)"
+      ></circle>
+    </svg>
+  </body>
+</html>

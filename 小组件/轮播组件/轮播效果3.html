@@ -2,7 +2,7 @@
  * @Author: WGF
  * @Date: 2022-08-01 09:38:45
  * @LastEditors: WGF
- * @LastEditTime: 2023-02-16 20:13:24
+ * @LastEditTime: 2023-04-11 14:30:43
  * @FilePath: \demo\小组件\轮播组件\轮播效果3.html
  * @Description: 无限轮播效果
 -->
@@ -79,30 +79,8 @@
                 key: 43,
                 value: "极须油场采听约口军气白真南约地。",
               },
-              {
-                key: 88,
-                value: "重般别们才本众史你思必事又各等。",
-              },
-              {
-                key: 26,
-                value: "段南会气广论得争温先现查。",
-              },
-              {
-                key: 60,
-                value: "改约制代厂速战确行力调法东育。",
-              },
-              {
-                key: 93,
-                value: "海叫其见采要易四主结基计场计支置利。",
-              },
-              {
-                key: 46,
-                value: "任取以油低花毛不存现近别。",
-              },
-              {
-                key: 20,
-                value: "中验在且导林子华活革造持东资。",
-              },
+              
+              
             ],
           };
           this.panelRef = React.createRef(); // DOM获取
@@ -144,7 +122,7 @@
 
         scroll = () => {
           const len = this.list.length;
-          if (len <= 9) return;
+          if (len <= 8) return;
           let temp = 0;
           this.timer = setInterval(() => {
             this.index = this.index % len;

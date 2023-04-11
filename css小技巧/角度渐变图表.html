@@ -1,0 +1,53 @@
+<!--
+ * @Author: WGF
+ * @Date: 2023-03-24 14:34:13
+ * @LastEditors: WGF
+ * @LastEditTime: 2023-04-06 17:41:52
+ * @FilePath: \demo\css小技巧\角度渐变图表.html
+ * @Description: 文件描述
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: black;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .wrapper{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: rgba(16, 172, 238, 0.10);
+        --mask: radial-gradient(closest-side, transparent 80%, black 80%);
+        -webkit-mask-image: var(--mask);
+        mask-image: var(--mask);
+      }
+      .loading {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: conic-gradient(
+          rgba(0, 216, 249, 0.2),
+          rgba(0, 216, 249, 1) 90%,
+          transparent 90%
+        );
+        -webkit-mask-image: var(--mask);
+        mask-image: var(--mask);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="loading"></div>
+    </div>
+  </body>
+</html>
